@@ -1,6 +1,7 @@
 package api
 
 import (
+	bin "github.com/miguelmota/cointop/pkg/api/impl/binance"
 	cg "github.com/miguelmota/cointop/pkg/api/impl/coingecko"
 	cmc "github.com/miguelmota/cointop/pkg/api/impl/coinmarketcap"
 )
@@ -21,4 +22,8 @@ func NewCG(perPage, maxPages uint) Interface {
 		PerPage:  perPage,
 		MaxPages: maxPages,
 	})
+}
+
+func NewBin(apiKey string, secretKey string) Interface {
+	return bin.NewBinance(apiKey, secretKey)
 }

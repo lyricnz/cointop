@@ -6,6 +6,9 @@ const CoinMarketCap = "coinmarketcap"
 // CoinGecko is API choice
 const CoinGecko = "coingecko"
 
+// Binance is API choice
+const Binance = "binance"
+
 // PortfolioView is portfolio table constant
 const PortfolioView = "portfolio"
 

@@ -2,6 +2,7 @@ package cointop
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"strings"
 
@@ -53,11 +54,14 @@ func GetCoinPrices(config *PricesConfig) ([]string, error) {
 	if len(config.Coins) == 0 {
 		return nil, ErrCoinNameOrSymbolRequired
 	}
+	log.Printf("apichoice=%v", config.APIChoice)
 	var priceAPI api.Interface
 	if config.APIChoice == CoinMarketCap {
 		priceAPI = api.NewCMC("")
 	} else if config.APIChoice == CoinGecko {
 		priceAPI = api.NewCG(0, 0)
+	} else if config.APIChoice == Binance {
+		priceAPI = api.NewBin("", "")
 	} else {
 		return nil, ErrInvalidAPIChoice
 	}

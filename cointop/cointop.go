@@ -168,7 +168,9 @@ type Config struct {
 
 // APIKeys is api keys structure
 type APIKeys struct {
-	cmc string
+	cmc            string
+	binance_api    string
+	binance_secret string
 }
 
 // DefaultCurrency ...
@@ -389,6 +391,8 @@ func NewCointop(config *Config) (*Cointop, error) {
 		ct.api = api.NewCMC(ct.apiKeys.cmc)
 	} else if ct.apiChoice == CoinGecko {
 		ct.api = api.NewCG(perPage, maxPages)
+	} else if ct.apiChoice == Binance {
+		ct.api = api.NewBin(ct.apiKeys.binance_api, ct.apiKeys.binance_secret)
 	} else {
 		return nil, ErrInvalidAPIChoice
 	}

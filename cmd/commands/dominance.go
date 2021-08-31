@@ -23,7 +23,7 @@ func DominanceCmd() *cobra.Command {
 	}
 
 	dominanceCmd.Flags().StringVarP(&currency, "currency", "f", "USD", "The currency to convert to")
-	dominanceCmd.Flags().StringVarP(&apiChoice, "api", "a", cointop.CoinGecko, "API choice. Available choices are \"coinmarketcap\" and \"coingecko\"")
+	dominanceCmd.Flags().StringVarP(&apiChoice, "api", "a", cointop.CoinGecko, "API choice. Available choices are \"coinmarketcap\", \"coingecko\" and \"binance\"")
 
 	return dominanceCmd
 }
