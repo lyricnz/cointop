@@ -37,10 +37,10 @@ type Service struct {
 
 // NewCoinGecko new service
 func NewCoinGecko(config *Config) *Service {
-	var maxResultsPerPage uint = 250 // absolute max
-	var maxResults uint = 0
-	var maxPages uint = 10
-	var perPage uint = 100
+	maxResultsPerPage := 250 // absolute max
+	maxResults := uint(0)
+	maxPages := uint(10)
+	perPage := uint(100)
 	if config.PerPage > 0 {
 		perPage = config.PerPage
 	}
@@ -154,9 +154,31 @@ func (s *Service) GetGlobalMarketGraphData(convert string, start int64, end int6
 	if convertTo == "" {
 		convertTo = "usd"
 	}
-	graphData, err := s.client.GlobalCharts(convertTo, days)
+	graphData, err := s.client.GlobalCharts("usd", days)
 	if err != nil {
 		return ret, err
+	}
+
+	// This API does not appear to support vs_currency and only returns USD, so use ExchangeRates to convert
+	rate := 1.0
+	if convertTo != "usd" {
+		rates, err := s.client.ExchangeRates()
+		if err != nil {
+			return ret, err
+		}
+		if rates == nil {
+			return ret, fmt.Errorf("expected rates, received nil")
+		}
+		// Combined rate is USD->BTC->other
+		btcRate, found := (*rates)[convertTo]
+		if !found {
+			return ret, fmt.Errorf("unsupported currency conversion: %s", convertTo)
+		}
+		usdRate, found := (*rates)["usd"]
+		if !found {
+			return ret, fmt.Errorf("unsupported currency conversion: usd")
+		}
+		rate = btcRate.Value / usdRate.Value
 	}
 
 	var marketCapUSD [][]float64
@@ -165,7 +187,7 @@ func (s *Service) GetGlobalMarketGraphData(convert string, start int64, end int6
 		for _, item := range *graphData.Stats {
 			marketCapUSD = append(marketCapUSD, []float64{
 				float64(item[0]),
-				float64(item[1]),
+				float64(item[1]) * rate,
 			})
 		}
 	}
