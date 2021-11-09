@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"os"
 	"sort"
@@ -673,6 +674,36 @@ func (ct *Cointop) SetPortfolioEntry(coin string, holdings float64, buyPrice flo
 		return err
 	}
 
+	return nil
+}
+
+type CgPortfolioCoin struct {
+	TotalHoldings float64 `json:"total_holdings"`
+	TotalCost     float64 `json:"total_cost"`
+	NetCost       float64 `json:"average_net_cost"`
+	CoinId        int     `json:"portfolio_coin_id"`
+}
+type CgPortfolio struct {
+	Coins []CgPortfolioCoin `json:"portfolio_coins"`
+}
+
+func (ct *Cointop) SetPortfolioFromCoinGecko(filename string) error {
+	jsonFile, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var portfolio CgPortfolio
+	err = json.Unmarshal(byteValue, &portfolio)
+	if err != nil {
+		return err
+	}
+
+	// log.Debugf("XXX %v", portfolio)
+
+	// func (ct *Cointop) SetPortfolioEntry(coin string, holdings float64, buyPrice float64, buyCurrency string) error {
 	return nil
 }
 

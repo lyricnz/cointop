@@ -60,6 +60,8 @@ func HoldingsCmd() *cobra.Command {
 				}
 			}
 
+			ct.SetPortfolioFromCoinGecko("simon-portfolio.json")
+
 			return ct.PrintHoldingsTable(&cointop.TablePrintOptions{
 				SortBy:        sortBy,
 				SortDesc:      sortDesc,
